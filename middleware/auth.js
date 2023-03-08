@@ -15,6 +15,7 @@ const authenticateUser = async (req, res, next) =>{
         req.user = {userID: decoded.id}
         next()
     }catch(error){
+    
         throw new UnauthenticatedError('Unauthorized access')
     }
 }

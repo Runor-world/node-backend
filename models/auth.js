@@ -3,27 +3,20 @@ const bycrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 const UserSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        minlength: 3, 
-        maxlength: 30,
-        required: [true, 'Please provide username'],
-        trim: true
-    },
     firstName: {
         type: String,
         minlength: 2,
-        maxlength: 30,
+        maxlength: 50,
         required: [true, 'Please provide first name'],
         trim: true
-    }, 
-    lastName: {
+    },  
+    otherName: {
         type: String,
         minlength: 2,
-        maxlength: 30,
-        required: [true, 'Please provide last name'],
+        maxlength: 50,
+        required: [true, 'Please provide other name'],
         trim: true
-    }, 
+    },  
     email: {
         type: String,
         match: [
@@ -44,13 +37,27 @@ const UserSchema = new mongoose.Schema({
         minlength: 3,
         trim: true,
         default: 'my town'
-    }
+    }, 
+    verified: {
+        type: Boolean,
+        default: false
+    },
+    verificationCode: {
+        type: String,
+        length: 4,
+    },
+    photo: String
 })
 
 // hash the password before saving it
 UserSchema.pre('save', async function(next){
+
+    // exit when login with google and facebook
+    if (!this.password) return
+
     // exit the function when other fields are updated
     if(!this.isModified('password')) return
+
     const salt = await bycrypt.genSalt(10)
     this.password = await bycrypt.hash(this.password, salt)
     next()
@@ -60,7 +67,6 @@ UserSchema.methods.getJWT = function(){
     const token = jwt.sign(
         {
             id: this._id,
-            username: this.username, 
             email: this.email
         },
         process.env.JWT_SECRET,
@@ -75,5 +81,6 @@ UserSchema.methods.comparePassword = async function(password){
     const isMatch = await bycrypt.compare(password, this.password)
     return isMatch
 }
+
 
 module.exports = mongoose.model('User', UserSchema)

@@ -1,10 +1,19 @@
 require('dotenv').config()
 const connectDatabase = require('./db/connection')
 require('express-async-errors')
+const morgan  = require('morgan')
+const passport = require('passport')
+const passportStrategy = require('./passport')
+const cookieSession = require('cookie-session')
+
 // middlewares
 const errorHandlerMiddleware = require('./middleware/error-handler')
 const notFoundRouteMiddleware = require('./middleware/not-found')
 const authenticateUserMiddleware = require('./middleware/auth')
+
+
+// passport strategy
+
 
 const express = require('express')
 const app = express()
@@ -18,16 +27,25 @@ const helmet = require('helmet')
 const rateLimiter = require('express-rate-limit')
 const xss = require('xss-clean')
 
+
+// morgan to log request info in the console during development
+if(process.env.SERVER !== 'production'){
+    app.use(morgan('dev'))
+}
+
 // set encoding middlewares
 app.use(express.json())
 app.use(express.static('./public'))
 // security middlewares
 // app.set('trust proxy', 1)
-const corsOptions = {
-    // origin: process.env.CLIENT_ORIGIN || 'http://localhost:8000' 
-    origin: "*"
-}
-app.use(cors(corsOptions))
+
+app.use(cookieSession({name: 'session', keys: [process.env.SESSION_KEY] ,maxAge: 24 * 60 * 60 * 1000}))
+
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+    methods: 'GET,PUT,POST,PATCH'
+}))
 app.use(xss())
 app.use(helmet())
 app.use(
@@ -39,17 +57,17 @@ app.use(
     )
 )
 
-
+// passort initialization
+app.use(passport.initialize())
+app.use(passport.session())
 
 // set router
 app.use('/api/auth', authRouter)
 app.use('/api/jobs', authenticateUserMiddleware, jobRouter)
 
-
 // error middlewares
 app.use(errorHandlerMiddleware)
 app.use(notFoundRouteMiddleware)
-
 
 const port  = process.env.PORT || 8000
 const mongo_uri = process.env.SERVER === 'development'? "mongodb://127.0.0.1:27017/runor":process.env.MONGO_URI
