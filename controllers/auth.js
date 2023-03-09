@@ -64,11 +64,9 @@ const logout = async(req, res) => {
         req.logout()
         res.clearCookie("session", {path:"/",httpOnly:true})
         res.clearCookie("session.sig", {path:"/",httpOnly:true})
-     
-        return res.redirect('http://localhost:3000/')
-    }else{
-        res.status(200).send('User already logged out!')
+        
     }
+    return res.redirect('https://runor.org')
 }
 
 
