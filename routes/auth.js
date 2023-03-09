@@ -14,6 +14,7 @@ router.route('/logout').get(logout)
 router.route('/login/success').get(loginSuccess)
 router.route('/login/failed').get(loginFailure)
 
+const REDIRECT_URL = process.env.SERVER === 'production'? 'https://runor.org': 'http://localhost:3000/'
 
 // facebook-passport routes
 router.get('/facebook', passport.authenticate('facebook', {scope: ['email']}))
@@ -21,7 +22,7 @@ router.get('/facebook', passport.authenticate('facebook', {scope: ['email']}))
 router.get('/facebook/callback', passport.authenticate('facebook', {
         failureRedirect: '/login/failed',
     }), (req, res)=>{
-        res.redirect('http://localhost:3000/')
+        res.redirect(REDIRECT_URL)
     }
 )
 
@@ -33,7 +34,7 @@ router.get('/google/callback', passport.authenticate('google',  {
         // session: false
     }), (req, res)=>{
         res.set('jwt', req.user.getJWT())
-        res.redirect('http://localhost:3000/')
+        res.redirect(REDIRECT_URL)
     }
 )
 

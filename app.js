@@ -26,6 +26,7 @@ const cors = require('cors')
 const helmet = require('helmet')
 const rateLimiter = require('express-rate-limit')
 const xss = require('xss-clean')
+const { application } = require('express')
 
 
 // morgan to log request info in the console during development
@@ -62,6 +63,9 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 // set router
+app.get('/api', async(req, res) =>{
+    res.send('<h1 style="text-align: center">Welcome to runor backend</h2>')
+})
 app.use('/api/auth', authRouter)
 app.use('/api/jobs', authenticateUserMiddleware, jobRouter)
 
