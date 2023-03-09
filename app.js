@@ -43,7 +43,7 @@ app.use(express.static('./public'))
 app.use(cookieSession({name: 'session', keys: [process.env.SESSION_KEY] ,maxAge: 24 * 60 * 60 * 1000}))
 
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://runor-frontend.onrender.com'],
+    origin: ['http://localhost:3000', 'https://runor.org'],
     credentials: true,
     methods: 'GET,PUT,POST,PATCH'
 }))
