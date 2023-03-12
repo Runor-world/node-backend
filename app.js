@@ -21,6 +21,7 @@ const app = express()
 // routers
 const authRouter = require('./routes/auth')
 const jobRouter = require('./routes/jobs')
+const profileRouter = require('./routes/profile')
 
 const cors = require('cors')
 const helmet = require('helmet')
@@ -67,6 +68,7 @@ app.get('/api', async(req, res) =>{
     res.send('<h1 style="text-align: center">Welcome to runor backend</h2>')
 })
 app.use('/api/auth', authRouter)
+app.use('/api/profile', profileRouter)
 app.use('/api/jobs', authenticateUserMiddleware, jobRouter)
 
 // error middlewares

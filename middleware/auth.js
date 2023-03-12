@@ -7,15 +7,15 @@ const authenticateUser = async (req, res, next) =>{
     if(!authHeader || !authHeader.startsWith('Bearer')){
         throw new BadRequestError('Invalid authentication')
     }
-
     const token  = authHeader.split(' ')[1]
+    console.log(typeof token)
     try{
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         console.log(decoded)
         req.user = {userID: decoded.id}
         next()
     }catch(error){
-    
+        console.log('token error:', error)
         throw new UnauthenticatedError('Unauthorized access')
     }
 }

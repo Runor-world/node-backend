@@ -1,26 +1,26 @@
-const UserModel = require('../models/auth')
+const {UserModel} = require('../models/auth')
 const { StatusCodes } = require('http-status-codes')
-const { BadRequestError } = require('../errors')
+const { BadRequestError, UnAuthenticatedError } = require('../errors')
 
-const login = async (req, res) => {
+
+const login = async(req, res)=>{
     const {email, password} = req.body
-    if(!email || !password){
-        throw new BadRequestError('Please provide valid credentials')
+    if(!email && !password){
+        throw new BadRequestError('Please provide email and password')
     }
-
-    const user = await UserModel.findOne({email})
+    
+    const user = await UserModel.findOne({email})  
     if(!user){
-        throw new BadRequestError('Please provide valid credentials')
-    }
+        throw new UnAuthenticatedError('Email is not registered')
+    } 
 
-    const isCorrectPassword = user.comparePassword(password)
-
-    if(!isCorrectPassword){
-        throw new UnAuthenticatedError('Please provide correct password')
+    const isMatch = await user.comparePassword(password)
+    if(!isMatch){
+        throw new UnAuthenticatedError('Password is incorrect')
     }
 
     const token = user.getJWT()
-    res.status(StatusCodes.OK).json({user: user, token})
+    res.status(StatusCodes.OK).json({user, token, message: 'success', success: true})
 }
 
 const register = async (req, res) =>{
@@ -30,7 +30,12 @@ const register = async (req, res) =>{
         throw new BadRequestError('Email is already registered')
     }
     const user = await UserModel.create({...req.body})
-    
+
+    if(!user){
+        throw new BadRequestError('Something went wrong')
+    }
+    const newUserProfile = await UserProfileModel.create({user: user._id})
+
     res.status(StatusCodes.CREATED).json(
         {
             user: user,
@@ -66,7 +71,7 @@ const logout = async(req, res) => {
         res.clearCookie("session.sig", {path:"/",httpOnly:true})
         
     }
-    return res.redirect('https://runor.org')
+    return res.redirect(process.env.SERVER==='development'? 'http://localhost:3000': 'https://runor.org')
 }
 
 
@@ -94,4 +99,12 @@ const loginFailure =  async(req, res) => {
     })
 }
 
-module.exports = {login, register, updateUser, logout, loginSuccess, loginFailure}
+
+module.exports = {
+    login, 
+    register, 
+    updateUser, 
+    logout, 
+    loginSuccess, 
+    loginFailure, 
+}
