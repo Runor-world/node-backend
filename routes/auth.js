@@ -2,12 +2,26 @@ const passport = require('passport')
 const express = require('express')
 const router = express.Router()
 
-const {login, register, updateUser, logout, loginSuccess, loginFailure} = require('../controllers/auth')
+const {
+    login,
+    register, 
+    updateUser, 
+    logout, 
+    loginSuccess, 
+    loginFailure, 
+    updateProfileInfo,
+    updateProfilePhoto,
+    updateProfileBackgroundPhoto,
+    createUserServiceProfile,
+    updateUserServiceProfile,
+} = require('../controllers/auth')
+
 const authenticateUser = require('../middleware/auth')
 
 router.route('/login').post(login)
 router.route('/signup').post(register)
 router.route('/update-user').patch(authenticateUser, updateUser)
+
 
 // passport auth routes:
 router.route('/logout').get(logout)
@@ -33,7 +47,7 @@ router.get('/google/callback', passport.authenticate('google',  {
         failureMessage: 'Login with Google failed! Try again.', 
         // session: false
     }), (req, res)=>{
-        res.set('jwt', req.user.getJWT())
+        // res.set('jwt', req.user.getJWT())
         res.redirect(REDIRECT_URL)
     }
 )

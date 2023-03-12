@@ -1,4 +1,4 @@
-const User = require('./models/auth')
+const {UserModel: User} = require('./models/auth')
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
