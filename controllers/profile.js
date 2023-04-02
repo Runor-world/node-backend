@@ -22,8 +22,7 @@ const updateProfileInfo = async(req, res) => {
     user.otherName = otherName
     user.location = address
     await user.save()
-    
-    console.log('save: ', user)
+
     let newUserProfile = null
     const userProfile = await UserProfileModel.findOne({user_id: userID})
 
@@ -41,7 +40,7 @@ const updateProfileInfo = async(req, res) => {
 
     res.status(StatusCodes.OK).json(
         {
-            personalProfile: userProfile || newUserProfile, 
+            personalProfile: userProfile ?? newUserProfile, 
             user,
             message: 'profile updated successfully',
             success: true
@@ -112,6 +111,7 @@ const getAllProfiles = async(req, res) => {
     const {userID} = req.user
     const personalProfile = await UserProfileModel.findOne({user_id: userID})
     const serviceProfile = await UserServiceProfileModel.findOne({user_id: userID})
+
     res.status(StatusCodes.OK).json({
         personalProfile,
         serviceProfile, 

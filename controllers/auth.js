@@ -1,4 +1,5 @@
 const {UserModel} = require('../models/auth')
+const {UserProfileModel} = require('../models/profile')
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, UnAuthenticatedError } = require('../errors')
 
