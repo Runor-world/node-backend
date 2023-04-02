@@ -9,11 +9,6 @@ const {
     logout, 
     loginSuccess, 
     loginFailure, 
-    updateProfileInfo,
-    updateProfilePhoto,
-    updateProfileBackgroundPhoto,
-    createUserServiceProfile,
-    updateUserServiceProfile,
 } = require('../controllers/auth')
 
 const authenticateUser = require('../middleware/auth')

@@ -11,7 +11,9 @@ const UserProfileSchema = new mongoose.Schema({
         maxlength: 200,
         default: 'Short description of who you are.'
     },
-    birthday: Date,
+    birthday: {
+        type: Date
+    },
     city: String,
     country: String,
     user: {

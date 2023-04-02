@@ -8,10 +8,8 @@ const authenticateUser = async (req, res, next) =>{
         throw new BadRequestError('Invalid authentication')
     }
     const token  = authHeader.split(' ')[1]
-    console.log(typeof token)
     try{
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        console.log(decoded)
         req.user = {userID: decoded.id}
         next()
     }catch(error){
