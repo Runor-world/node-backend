@@ -14,10 +14,16 @@ const authenticateUserMiddleware = require('./middleware/auth')
 
 // passport strategy
 
-
 const express = require('express')
 const app = express()
 
+const fileUpload = require('express-fileupload')
+const cloudinary = require('cloudinary').v2
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET
+})
 // routers
 const authRouter = require('./routes/auth')
 const jobRouter = require('./routes/jobs')
@@ -37,6 +43,7 @@ if(process.env.SERVER !== 'production'){
 
 // set encoding middlewares
 app.use(express.json())
+app.use(fileUpload({ useTempFiles: true }))
 app.use(express.static('./public'))
 // security middlewares
 // app.set('trust proxy', 1)
