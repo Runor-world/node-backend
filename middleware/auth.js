@@ -1,4 +1,4 @@
-const {BadRequestError, UnauthenticatedError} = require('../errors')
+const {BadRequestError, UnAuthenticatedError} = require('../errors')
 const jwt = require('jsonwebtoken')
 
 const authenticateUser = async (req, res, next) =>{
@@ -14,7 +14,7 @@ const authenticateUser = async (req, res, next) =>{
         next()
     }catch(error){
         console.log('token error:', error)
-        throw new UnauthenticatedError('Unauthorized access')
+        throw new UnAuthenticatedError('Unauthorized access')
     }
 }
 

@@ -2,6 +2,8 @@ const { BadRequestError, UnAuthenticatedError } = require('../errors')
 const {UserProfileModel, UserServiceProfileModel} = require('../models/profile')
 const {StatusCodes} = require('http-status-codes')
 const {UserModel} = require('../models/auth')
+const cloudinary = require('cloudinary').v2
+const fs = require('fs')
 
 // profile controllers:
 
@@ -49,20 +51,37 @@ const updateProfileInfo = async(req, res) => {
 }
 
 const updateProfilePhoto = async(req, res) => {
-    const {photo} = req.body
+
+    if(!req.files){
+        throw new BadRequestError('File not uploaded')
+    }
+    const photo = req.files.image
+
+    if(!photo.mimetype.startsWith('image')){
+        throw new BadRequestError('Please upload image')
+    }
+
+    const maxSize = 1024 * 1024
+    if(photo.size > maxSize){
+        throw new BadRequestError('Image should not be more than 1MB')
+    }
 
     if(!photo){
-        throw new BadRequestError('Please provide photo')
+        throw new BadRequestError('Please provide background photo')
     }
 
     const userProfile = await UserProfileModel.findOne({user_id: req.user.userID})
     if(!userProfile){
         throw new BadRequestError('User profile not found')
     }
+    const result = await cloudinary.uploader.upload(photo.tempFilePath, {
+        use_filename: true,
+        folder: 'profile-photo'
+    })
 
-    userProfile.photo = photo
+    userProfile.photo = result.secure_url
     await userProfile.save()
-
+    fs.unlinkSync(photo.tempFilePath)
     res.status(StatusCodes.OK).json(
         {
             profile: userProfile, 
@@ -73,8 +92,21 @@ const updateProfilePhoto = async(req, res) => {
 
 }
 
+
 const updateProfileBackgroundPhoto = async(req, res) => {
-    const {backgroundPhoto} = req.body
+    if(!req.files){
+        throw new BadRequestError('File not uploaded')
+    }
+    const backgroundPhoto = req.files.image
+
+    if(!backgroundPhoto.mimetype.startsWith('image')){
+        throw new BadRequestError('Please upload image')
+    }
+
+    const maxSize = 1024 * 1024
+    if(backgroundPhoto.size > maxSize){
+        throw new BadRequestError('Image should not be more than 1MB')
+    }
 
     if(!backgroundPhoto){
         throw new BadRequestError('Please provide background photo')
@@ -84,10 +116,14 @@ const updateProfileBackgroundPhoto = async(req, res) => {
     if(!userProfile){
         throw new BadRequestError('User profile not found')
     }
+    const result = await cloudinary.uploader.upload(backgroundPhoto.tempFilePath, {
+        use_filename: true,
+        folder: 'background-photo'
+    })
 
-    userProfile.backgroundPhoto = backgroundPhoto
+    userProfile.backgroundPhoto = result.secure_url
     await userProfile.save()
-
+    fs.unlinkSync(backgroundPhoto.tempFilePath)
     res.status(StatusCodes.OK).json(
         {
             profile: userProfile, 
