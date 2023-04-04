@@ -18,7 +18,8 @@ const UserProfileSchema = new mongoose.Schema({
     country: String,
     user: {
         type: mongoose.Types.ObjectId,
-        required: [true, 'Please provide user']
+        required: [true, 'Please provide user'],
+        ref: 'User'
     }, 
 })
 

@@ -26,7 +26,7 @@ const updateProfileInfo = async(req, res) => {
     await user.save()
 
     let newUserProfile = null
-    const userProfile = await UserProfileModel.findOne({user_id: userID})
+    const userProfile = await UserProfileModel.findOne({user: userID})
 
     if (!userProfile){
         // create profile if not created
@@ -70,7 +70,7 @@ const updateProfilePhoto = async(req, res) => {
         throw new BadRequestError('Please provide background photo')
     }
 
-    const userProfile = await UserProfileModel.findOne({user_id: req.user.userID})
+    const userProfile = await UserProfileModel.findOne({user: req.user.userID})
     if(!userProfile){
         throw new BadRequestError('User profile not found')
     }
@@ -112,7 +112,7 @@ const updateProfileBackgroundPhoto = async(req, res) => {
         throw new BadRequestError('Please provide background photo')
     }
 
-    const userProfile = await UserProfileModel.findOne({user_id: req.user.userID})
+    const userProfile = await UserProfileModel.findOne({user: req.user.userID})
     if(!userProfile){
         throw new BadRequestError('User profile not found')
     }
@@ -145,8 +145,8 @@ const updateUserServiceProfile = async(req, res) =>{
 const getAllProfiles = async(req, res) => {
     // fetches both personal and service info
     const {userID} = req.user
-    const personalProfile = await UserProfileModel.findOne({user_id: userID})
-    const serviceProfile = await UserServiceProfileModel.findOne({user_id: userID})
+    const personalProfile = await UserProfileModel.findOne({user: userID})
+    const serviceProfile = await UserServiceProfileModel.findOne({user: userID})
 
     res.status(StatusCodes.OK).json({
         personalProfile,
