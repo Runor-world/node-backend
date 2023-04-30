@@ -46,7 +46,17 @@ const UserSchema = new mongoose.Schema({
         type: String,
         length: 4,
     },
-    photo: String
+    photo: String,
+    role: {
+        type: String,
+        required: [true, 'Please provide user role'],
+        default: 'user',
+        enum: {
+            values: ['staff', 'admin', 'user'],
+            message: 'Please select valid role'
+        }
+    }
+
 }, {timestamps: true})
 
 
@@ -68,7 +78,8 @@ UserSchema.methods.getJWT = function(){
     const token = jwt.sign(
         {
             id: this._id,
-            email: this.email
+            email: this.email,
+            role: this.role
         },
         process.env.JWT_SECRET,
         {

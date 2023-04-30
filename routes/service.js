@@ -6,8 +6,9 @@ const {
 
 const express = require('express')
 const authenticateUser = require('../middleware/auth')
+const authorizePermissions = require('../middleware/permission')
 const router = express.Router()
 
-router.route('/').get(getAllServices, authenticateUser).post(createService, authenticateUser).patch(updateService, authenticateUser)
+router.route('/').get(getAllServices).post(authenticateUser, authorizePermissions, createService).patch(authenticateUser, authorizePermissions, updateService)
 
 module.exports = router

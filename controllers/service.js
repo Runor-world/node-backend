@@ -16,7 +16,7 @@ const createService = async(req, res) => {
         throw new BadRequestError('Name and description required')
     }
 
-    const newService = await ServiceCategoryModel.create({name, description})
+    const newService = await ServiceCategoryModel.create({name, description, active})
 
     res.status(StatusCodes.CREATED).json({
         success: true, 
