@@ -28,6 +28,7 @@ cloudinary.config({
 const authRouter = require('./routes/auth')
 const jobRouter = require('./routes/jobs')
 const profileRouter = require('./routes/profile')
+const serviceRouter = require('./routes/service')
 
 const cors = require('cors')
 const helmet = require('helmet')
@@ -77,6 +78,7 @@ app.get('/api', async(req, res) =>{
 app.use('/api/auth', authRouter)
 app.use('/api/profile', profileRouter)
 app.use('/api/jobs', authenticateUserMiddleware, jobRouter)
+app.use('/api/service', serviceRouter)
 
 // error middlewares
 app.use(errorHandlerMiddleware)
