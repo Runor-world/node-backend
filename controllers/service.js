@@ -23,16 +23,16 @@ const createService = async(req, res) => {
         service: newService,
         msg: 'Service created'
     })
-
 }
 
 const updateService = async(req, res) => {
-    const {serviceID, name, description, active} = req.body
-    console.log(serviceID, name, description, active)
-    const service = await ServiceCategoryModel.findOne({_id: serviceID})
+    console.log(req.body)
+    const {_id, name, description, active} = req.body
+    console.log(_id, name, description, active)
+    const service = await ServiceCategoryModel.findOne({_id})
 
     if(!service){
-        throw new BadRequestError(`Service with ID ${serviceID} not found`)
+        throw new BadRequestError(`Service with ID ${_id} not found`)
     }
 
     if(active===undefined || !name || !description) {
@@ -46,7 +46,8 @@ const updateService = async(req, res) => {
 
     res.status(StatusCodes.OK).json({
         success: true,
-        service
+        service, 
+        msg: 'Service updated'
     })
 }
 
