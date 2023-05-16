@@ -50,7 +50,7 @@ const updateUser = async(req, res) => {
     if(!email || !lastName || !firstName || !location  || !username){
         throw new BadRequestError('Please provide user values')
     }
-    console.log(req.user)
+
     const user = await UserModel.findOne({_id: req.user.userID})
 
     // update values
@@ -99,7 +99,6 @@ const loginFailure =  async(req, res) => {
         user: false
     })
 }
-
 
 module.exports = {
     login, 
