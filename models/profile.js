@@ -27,19 +27,20 @@ const UserServiceProfileSchema = new mongoose.Schema({
     accountType: {
         type: String,
         enum: {
-            values: ['service provider', 'service consumer', 'both'],
+            values: ['service man', 'service consumer', 'business'],
             message: '{VALUE} is not supported'
         },
         default: 'service consumer'
     },
-    serviceCategory: {
+    service: {
         type: ServiceCategorySchema,
         message: 'Service is not supported'
     },
-    relatedSkills: {
-        type: [SkillSchema.title],
-        message: 'Skill is not supported'
-    }
+    user: {
+        type: mongoose.Types.ObjectId,
+        required: [true, 'Please provide user'],
+        ref: 'User'
+    }, 
 })
 
 const UserProfileModel = mongoose.model('profile', UserProfileSchema)
