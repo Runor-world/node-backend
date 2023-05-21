@@ -135,11 +135,63 @@ const updateProfileBackgroundPhoto = async(req, res) => {
 }
 
 const createUserServiceProfile = async(req, res) =>{ 
-    res.json('creating user service proifle')
+    console.log(req.body)
+    const {accountType, service} = req.body
+    const {userID} = req.user
+    if( !accountType){
+        throw new BadRequestError('Please provide account type')
+    }
+    if(!service){
+        throw new BadRequestError('Please provide service')
+    }
+
+    const user = await UserModel.findOne({_id: userID})
+    if(!user){
+        throw BadRequestError(`User with ID ${userID} not found`)
+    }
+
+    const userServiceProfile = await UserServiceProfileModel.create(
+            {
+                accountType, 
+                service, 
+                user: req.user.userID
+            }
+        )
+
+    res.status(StatusCodes.CREATED).json(
+        {
+            success: true, 
+            msg: 'User service profile created', 
+            userServiceProfile
+        }
+    )
 }
 
 const updateUserServiceProfile = async(req, res) =>{
-    res.json('updating user service profile')
+    const {accountType, service} = req.body
+    if( !accountType){
+        throw new BadRequestError('Please provide account type')
+    }
+    if(!service){
+        throw new BadRequestError('Please provide service')
+    }
+
+    const userServiceProfile = await UserServiceProfileModel.findOne({user: req.user.userID})
+    if(!userServiceProfile){
+        throw new BadRequestError(`Service profile for user with ID ${req.user.userID} not found`)
+    }
+
+    userServiceProfile.service = service
+    userServiceProfile.accountType = accountType
+    await userServiceProfile.save()
+
+    res.status(StatusCodes.OK).json(
+        {
+            success: true, 
+            userServiceProfile,
+            msg: 'Updated successfully'
+        }
+        )
 }
 
 const getAllProfiles = async(req, res) => {

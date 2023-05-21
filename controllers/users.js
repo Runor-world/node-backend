@@ -57,6 +57,7 @@ const userSearchByName = async( req, res) => {
     )
     res.status(StatusCodes.OK).json({users, nHit: users.length})
 }
+
 module.exports = {
     getAllUsers,
     userSearchByName
