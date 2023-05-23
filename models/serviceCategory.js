@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 
 const ServiceCategorySchema = new mongoose.Schema({
     name: {
-        unique: [true, 'Service is alredy added'],
         type: String,
         required: [true, 'Please provide service name'],
         minlength: 3,

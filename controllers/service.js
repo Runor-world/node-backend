@@ -16,6 +16,10 @@ const createService = async(req, res) => {
         throw new BadRequestError('Name and description required')
     }
 
+    const existingServices = await ServiceCategoryModel.findOne({name, option: '-i'})
+    if(existingServices){
+        throw new BadRequestError(`Service with name ${exists}`)
+    }
     const newService = await ServiceCategoryModel.create({name, description, active})
 
     res.status(StatusCodes.CREATED).json({
