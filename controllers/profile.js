@@ -135,13 +135,13 @@ const updateProfileBackgroundPhoto = async(req, res) => {
 }
 
 const createUserServiceProfile = async(req, res) =>{ 
-    const {accountType, service} = req.body
+    const {accountType, services} = req.body
     const {userID} = req.user
 
     if( !accountType){
         throw new BadRequestError('Please provide account type')
     }
-    if(!service){
+    if(!services.length < 1){
         throw new BadRequestError('Please provide service')
     }
 
@@ -164,7 +164,7 @@ const createUserServiceProfile = async(req, res) =>{
     const userServiceProfile = await UserServiceProfileModel.create(
             {
                 accountType, 
-                services: [service], 
+                services: [...services], 
                 user: userID
             }
         )
