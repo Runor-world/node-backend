@@ -141,13 +141,13 @@ const createUserServiceProfile = async(req, res) =>{
     if( !accountType){
         throw new BadRequestError('Please provide account type')
     }
-    if(!services.length < 1){
+    if(services.length < 1){
         throw new BadRequestError('Please provide service')
     }
 
-    // if( accountType === 'service man' && services.length > 1){
-    //     throw new BadRequestError('Too many services. Select single service')
-    // }
+    if( accountType === 'service man' && services.length > 1){
+        throw new BadRequestError('Too many services. Select single service')
+    }
 
     // check if service profile exist
     const existingServiceProfile = await UserServiceProfileModel.findOne({user: userID})
