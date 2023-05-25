@@ -30,6 +30,7 @@ const jobRouter = require('./routes/jobs')
 const profileRouter = require('./routes/profile')
 const serviceRouter = require('./routes/service')
 const usersRouter = require('./routes/users')
+const serviceManRouter = require('./routes/serviceMan')
 
 const cors = require('cors')
 const helmet = require('helmet')
@@ -81,6 +82,7 @@ app.use('/api/profile', profileRouter)
 app.use('/api/jobs', authenticateUserMiddleware, jobRouter)
 app.use('/api/service', serviceRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/serviceman', serviceManRouter)
 
 // error middlewares
 app.use(errorHandlerMiddleware)
