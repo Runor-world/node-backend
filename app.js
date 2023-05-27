@@ -25,11 +25,12 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_SECRET
 })
 // routers
-const authRouter = require('./routes/auth')
 const jobRouter = require('./routes/jobs')
+const authRouter = require('./routes/auth')
+const usersRouter = require('./routes/users')
+const hiringRouter = require('./routes/hiring')
 const profileRouter = require('./routes/profile')
 const serviceRouter = require('./routes/service')
-const usersRouter = require('./routes/users')
 const serviceManRouter = require('./routes/serviceMan')
 
 const cors = require('cors')
@@ -83,6 +84,7 @@ app.use('/api/jobs', authenticateUserMiddleware, jobRouter)
 app.use('/api/service', serviceRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/serviceman', serviceManRouter)
+app.use('/api/hiring', hiringRouter)
 
 // error middlewares
 app.use(errorHandlerMiddleware)
