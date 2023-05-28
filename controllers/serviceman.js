@@ -34,7 +34,6 @@ const getAllServiceMen = async(req, res) => {
 
 const getServiceMan = async(req, res) =>{
     const {id: serviceProviderId} = req.params
-    console.log(serviceProviderId)
 
     const serviceMan = await UserServiceProfileModel.aggregate([
         {
