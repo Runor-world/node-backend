@@ -33,8 +33,9 @@ const UserServiceProfileSchema = new mongoose.Schema({
         default: 'service consumer'
     },
     services: {
-        type: [ServiceCategorySchema],
-        message: 'Service is not supported'
+        type:[mongoose.Types.ObjectId],
+        required: [true, 'Please provide service ID'],
+        ref: 'serviceCategory'
     },
     user: {
         type: mongoose.Types.ObjectId,
