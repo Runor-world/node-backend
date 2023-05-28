@@ -15,7 +15,7 @@ const getAllServiceMen = async(req, res) => {
                 $and: [
                     {
                         $or: [
-                            {accountType: "service provider"},
+                            {accountType: "service man"},
                             {accountType: "business"}
                         ]
                     },
@@ -33,7 +33,7 @@ const getAllServiceMen = async(req, res) => {
             $unwind: '$profile'
         }, 
     ])
-    const result = await UserServiceProfileModel.populate(serviceMen, 'user')
+    const result = await UserServiceProfileModel.populate(serviceMen, ['user', 'services'])
     res.status(StatusCodes.OK).json({serviceMen: result, nHits: result.length})
 }
 
@@ -57,8 +57,7 @@ const getServiceMan = async(req, res) =>{
             $unwind: '$profile'
         }, 
     ])
-    console.log(serviceMan)
-    const result = await UserServiceProfileModel.populate(serviceMan[0], 'user')
+    const result = await UserServiceProfileModel.populate(serviceMan[0], ['user', 'services'])
     res.status(StatusCodes.OK).json({serviceProvider: result?? {}, success: true})
 }
 
