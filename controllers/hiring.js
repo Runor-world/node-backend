@@ -1,6 +1,8 @@
 const {StatusCodes} = require('http-status-codes')
 const { BadRequestError } = require('../errors')
 const HiringModel = require('../models/hiring')
+const mongoose = require('mongoose')
+const ObjectId = mongoose.Types.ObjectId
 
 
 const createHiring = async( req, res) => {
@@ -36,6 +38,67 @@ const createHiring = async( req, res) => {
     res.status(StatusCodes.CREATED).json({hiring, success: true, msg: 'Hiring created'})
 }
 
+const getPendingHiringByUser = async(req, res) => {
+    const {userID} = req.user
+
+    const result = await HiringModel.aggregate([
+        {
+            $match: {
+                $and:[
+                    {
+                        $or: [
+                            {serviceConsumer: ObjectId(userID)},
+                            {serviceProvider: ObjectId(userID)}
+                        ]
+                    },
+                    { status: 'pending' }
+                ], 
+            }
+        },
+        {
+            $lookup: {
+                from: 'profiles',
+                localField: 'serviceProvider',
+                foreignField: 'user',
+                as: 'profile'
+            }
+        },{
+            $unwind: '$profile'
+        }, 
+    ])
+
+    const hirings = await HiringModel.populate(result, ['serviceProvider', 'serviceConsumer', 'service'])
+    res.status(StatusCodes.OK).json({hirings, count: hirings.length})
+}
+
+const getAllHiringByUser = async(req, res) => {
+    const {userID} = req.user
+
+    const result = await HiringModel.aggregate([
+        {
+            $match: {
+                $or: [
+                    {serviceConsumer: ObjectId(userID)},
+                    {serviceProvider: ObjectId(userID)}
+                ]
+            }
+        },
+        {
+            $lookup: {
+                from: 'profiles',
+                localField: 'serviceProvider',
+                foreignField: 'user',
+                as: 'profile'
+            }
+        },{
+            $unwind: '$profile'
+        }, 
+    ])
+
+    const hirings = await HiringModel.populate(result, ['serviceProvider', 'serviceConsumer', 'service'])
+    res.status(StatusCodes.OK).json({hirings, count: hirings.length})
+}
+
 const getAllHiring = async(req, res) => {
     const hirings = await HiringModel.find()
     res.status(StatusCodes.OK).json({hirings, count: hirings.length})
@@ -46,12 +109,14 @@ const updateHiring = async( req, res) => {
 }
 
 const deleteHiring = async( req, res) => {
-    res.status(StatusCodes.OK).json({})
+    res.status(StatusCodes.OK).json({hiring})
 }
 
 module.exports = {
     createHiring, 
     getAllHiring,
+    getPendingHiringByUser,
+    getAllHiringByUser,
     updateHiring, 
     deleteHiring
 }

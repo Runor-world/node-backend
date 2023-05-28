@@ -27,7 +27,7 @@ const HiringSchema = new mongoose.Schema({
     service: {
         type: mongoose.Types.ObjectId, 
         required: [true, 'Please provide service'],
-        ref: 'ServiceCategory'
+        ref: 'serviceCategory'
     } 
 }, {timestamps: true})
 
