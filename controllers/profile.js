@@ -135,18 +135,14 @@ const updateProfileBackgroundPhoto = async(req, res) => {
 }
 
 const createUserServiceProfile = async(req, res) =>{ 
-    const {accountType, services} = req.body
+    const {accountType, service} = req.body
     const {userID} = req.user
 
     if( !accountType){
         throw new BadRequestError('Please provide account type')
     }
-    if(services.length < 1){
+    if(!service){
         throw new BadRequestError('Please provide service')
-    }
-
-    if( accountType === 'service man' && services.length > 1){
-        throw new BadRequestError('Too many services. Select single service')
     }
 
     // check if service profile exist
@@ -164,7 +160,7 @@ const createUserServiceProfile = async(req, res) =>{
     const userServiceProfile = await UserServiceProfileModel.create(
             {
                 accountType, 
-                services: [...services], 
+                services: [service], 
                 user: userID
             }
         )
@@ -209,7 +205,7 @@ const getAllProfiles = async(req, res) => {
     // fetches both personal and service info
     const {userID} = req.user
     const personalProfile = await UserProfileModel.findOne({user: userID})
-    const serviceProfile = await UserServiceProfileModel.findOne({user: userID})
+    const serviceProfile = await UserServiceProfileModel.findOne({user: userID}).populate('services')
 
     res.status(StatusCodes.OK).json({
         personalProfile,

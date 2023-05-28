@@ -8,12 +8,17 @@ const ObjectId = mongoose.Types.ObjectId
 const getAllServiceMen = async(req, res) => {
     const {key, location} = req.body
 
+    // fetch serviceProviders with active and verified user account
     const serviceMen = await UserServiceProfileModel.aggregate([
         {
             $match: {
-                $or: [
-                    {accountType: "service provider"},
-                    {accountType: "business"}
+                $and: [
+                    {
+                        $or: [
+                            {accountType: "service provider"},
+                            {accountType: "business"}
+                        ]
+                    },
                 ]
             }
         }, 
