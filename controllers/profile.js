@@ -230,6 +230,7 @@ const getAllProfiles = async (req, res) => {
 };
 
 const createUserPhoneNumber = async (req, res) => {
+  console.log(req.body);
   const { phoneNumber } = req.body;
   if (!phoneNumber) {
     throw new BadRequestError("Please provide a phone number");
@@ -238,6 +239,15 @@ const createUserPhoneNumber = async (req, res) => {
 
   if (!user) {
     throw new UnAuthenticatedError("User not found! Pls login");
+  }
+
+  const existingNumber = await UserModel.findOne({
+    phoneNumber: phoneNumber,
+    _id: { $ne: req.user.userID },
+  });
+  console.log(existingNumber);
+  if (existingNumber) {
+    throw new BadRequestError("Number is used by another user");
   }
 
   // save phone number
