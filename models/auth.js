@@ -18,6 +18,10 @@ const UserSchema = new mongoose.Schema({
         required: [true, 'Please provide other name'],
         trim: true
     },  
+    phoneNumber: {
+        type: String,
+        required: [true, 'Please provide phone number']
+    },
     email: {
         type: String,
         match: [

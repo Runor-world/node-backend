@@ -8,11 +8,13 @@ const {
     updateUser, 
     logout, 
     loginSuccess, 
-    loginFailure, 
+    loginFailure,
+    sendTestSMS, 
 } = require('../controllers/auth')
 
 const authenticateUser = require('../middleware/auth')
 
+router.route('/sms').post(sendTestSMS)
 router.route('/login').post(login)
 router.route('/signup').post(register)
 router.route('/update-user').patch(authenticateUser, updateUser)

@@ -39,7 +39,6 @@ const getAllServiceMen = async(req, res) => {
 
 const getServiceMan = async(req, res) =>{
     const {id: serviceProviderId} = req.params
-
     const serviceMan = await UserServiceProfileModel.aggregate([
         {
             $match: {
