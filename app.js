@@ -37,8 +37,6 @@ const cors = require('cors')
 const helmet = require('helmet')
 const rateLimiter = require('express-rate-limit')
 const xss = require('xss-clean')
-const { application } = require('express')
-
 
 // morgan to log request info in the console during development
 if(process.env.SERVER !== 'production'){
@@ -83,8 +81,8 @@ app.use('/api/profile', profileRouter)
 app.use('/api/jobs', authenticateUserMiddleware, jobRouter)
 app.use('/api/service', serviceRouter)
 app.use('/api/users', usersRouter)
-app.use('/api/serviceman', serviceManRouter)
 app.use('/api/hiring', hiringRouter)
+app.use('/api/serviceman', serviceManRouter)
 
 // error middlewares
 app.use(errorHandlerMiddleware)

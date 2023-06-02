@@ -2,6 +2,7 @@ const {UserModel} = require('../models/auth')
 const {UserProfileModel} = require('../models/profile')
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, UnAuthenticatedError } = require('../errors')
+const { sendSMS } = require('../utils/sms')
 
 
 const login = async(req, res)=>{
@@ -25,7 +26,7 @@ const login = async(req, res)=>{
 }
 
 const register = async (req, res) =>{
-    
+    console.log(req.body)
     const existingUser = await UserModel.findOne({email: req.body.email})
     if(existingUser){
         throw new BadRequestError('Email is already registered')
@@ -100,7 +101,14 @@ const loginFailure =  async(req, res) => {
     })
 }
 
+const sendTestSMS = async(req, res) =>{
+    const {receiverPn} = req.body
+    sendSMS(receiverPn, `Hello ! It is runor ${Math.floor(Math.random() * 1000)}`)
+    res.status(StatusCodes.OK).json({msg: `Message sent to ${receiverPn}`})
+}
+
 module.exports = {
+    sendTestSMS,
     login, 
     register, 
     updateUser, 
