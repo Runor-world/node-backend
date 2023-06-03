@@ -35,13 +35,12 @@ const register = async (req, res) => {
   const existingNumber = await UserModel.findOne({
     phoneNumber: req.body.phoneNumber,
   });
-  console.log(existingNumber);
+
   if (existingNumber) {
     throw new BadRequestError("Number is already used");
   }
 
-  const user = await UserModel.create({ ...req.body });
-
+  const user = await UserModel.create({ ...req.body, active: true });
   if (!user) {
     throw new BadRequestError("Something went wrong");
   }
