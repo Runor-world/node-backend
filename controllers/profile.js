@@ -7,6 +7,7 @@ const { StatusCodes } = require("http-status-codes");
 const { UserModel } = require("../models/auth");
 const cloudinary = require("cloudinary").v2;
 const fs = require("fs");
+const { getTodayFormatedDate } = require("../utils/date");
 
 // profile controllers:
 
@@ -51,7 +52,13 @@ const updateProfileInfo = async (req, res) => {
 
   if (!userProfile) {
     // create profile if not created
-    newUserProfile = await UserProfileModel.create({ user: userID });
+    newUserProfile = await UserProfileModel.create({
+      user: userID,
+      bio: "my beatiful bio",
+      birthday: getTodayFormatedDate(),
+      city: "my city",
+      country: "my country",
+    });
   } else {
     newUserProfile = null; // clear newUserProfile when updating
     userProfile.bio = bio;
@@ -102,7 +109,7 @@ const updateProfilePhoto = async (req, res) => {
   fs.unlinkSync(photo.tempFilePath);
   res.status(StatusCodes.OK).json({
     profile: userProfile,
-    message: "profile photo updated successfully",
+    msg: "profile photo updated successfully",
     success: true,
   });
 };
@@ -230,7 +237,6 @@ const getAllProfiles = async (req, res) => {
 };
 
 const createUserPhoneNumber = async (req, res) => {
-  console.log(req.body);
   const { phoneNumber } = req.body;
   if (!phoneNumber) {
     throw new BadRequestError("Please provide a phone number");
@@ -245,7 +251,7 @@ const createUserPhoneNumber = async (req, res) => {
     phoneNumber: phoneNumber,
     _id: { $ne: req.user.userID },
   });
-  console.log(existingNumber);
+
   if (existingNumber) {
     throw new BadRequestError("Number is used by another user");
   }
@@ -254,7 +260,7 @@ const createUserPhoneNumber = async (req, res) => {
   user.phoneNumber = phoneNumber;
   await user.save();
   res
-    .status(StatusCodes.CREATED)
+    .status(StatusCodes.OK)
     .json({ success: true, user, msg: `${phoneNumber} successfully saved` });
 };
 
