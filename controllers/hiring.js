@@ -34,9 +34,8 @@ const createHiring = async (req, res) => {
     service: serviceId,
   });
 
-  console.log(existingHiring);
   if (existingHiring) {
-    throw new BadRequestError("Service man already hired");
+    throw new BadRequestError("Service man already hired by you");
   }
 
   let hiringStatus = "";
