@@ -28,6 +28,16 @@ const createHiring = async (req, res) => {
     throw new BadRequestError("Consumer and service cannot be the same");
   }
 
+  const existingHiring = await HiringModel.findOne({
+    serviceProvider: serviceProviderId,
+    serviceConsumer: serviceConsumerId,
+    service: serviceId,
+  });
+
+  if (existingHiring) {
+    throw new BadRequestError("Service man already hired by you");
+  }
+
   let hiringStatus = "";
   if (!status) {
     hiringStatus = "pending";
@@ -85,6 +95,7 @@ const getPendingHiringByUser = async (req, res) => {
 const getAllHiringByUser = async (req, res) => {
   // get all people or businesses hired by a user
   const { userID } = req.user;
+  console.log(userID, req.user);
   const result = await HiringModel.aggregate([
     {
       $match: {
@@ -103,7 +114,6 @@ const getAllHiringByUser = async (req, res) => {
       $unwind: "$servicemanProfile",
     },
   ]);
-  console.log(result);
   const hirings = await HiringModel.populate(result, [
     "serviceProvider",
     "serviceConsumer",
