@@ -44,10 +44,11 @@ const register = async (req, res) => {
   if (!user) {
     throw new BadRequestError("Something went wrong");
   }
-  const newUserProfile = await UserProfileModel.create({ user: user._id });
+  await UserProfileModel.create({ user: user._id });
 
   res.status(StatusCodes.CREATED).json({
     user: user,
+    msg: "Registered successfully",
     token: user.getJWT(),
   });
 };

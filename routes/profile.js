@@ -19,6 +19,6 @@ router.route("/photo").patch(authenticateUser, updateProfilePhoto);
 router
   .route("/backgroundphoto")
   .patch(authenticateUser, updateProfileBackgroundPhoto);
-router.route("/phonenumber").post(authenticateUser, createUserPhoneNumber);
+router.route("/phonenumber").patch(authenticateUser, createUserPhoneNumber);
 
 module.exports = router;

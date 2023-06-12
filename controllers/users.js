@@ -21,8 +21,8 @@ const updateUserStatus = async (req, res) => {
   res.status(StatusCodes.OK).json({
     success: true,
     msg: status
-      ? "User successfully deactivated"
-      : "User successfully activated",
+      ? "User successfully activated"
+      : "User successfully deactivated",
     user,
   });
 };
@@ -51,17 +51,6 @@ const userSearchByName = async (req, res) => {
   const { key } = req.body;
   const users = await UserModel.aggregate([
     {
-      $lookup: {
-        from: "profiles",
-        localField: "_id",
-        foreignField: "user",
-        as: "profile",
-      },
-    },
-    {
-      $unwind: "$profile",
-    },
-    {
       $match: {
         $or: [
           {
@@ -72,6 +61,17 @@ const userSearchByName = async (req, res) => {
           },
         ],
       },
+    },
+    {
+      $lookup: {
+        from: "profiles",
+        localField: "_id",
+        foreignField: "user",
+        as: "profile",
+      },
+    },
+    {
+      $unwind: "$profile",
     },
   ]);
   res.status(StatusCodes.OK).json({ users, nHit: users.length });
