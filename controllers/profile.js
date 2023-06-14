@@ -211,7 +211,7 @@ const updateUserServiceProfile = async (req, res) => {
     );
   }
 
-  userServiceProfile.service = service;
+  userServiceProfile.services = [service];
   userServiceProfile.accountType = accountType;
   await userServiceProfile.save();
 
