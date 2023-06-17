@@ -152,7 +152,28 @@ const getAllUserJobs = async (req, res) => {
 };
 
 const getAllHiring = async (req, res) => {
-  const hirings = await HiringModel.find();
+  // const queryResult = await HiringModel.find();
+
+  const queryResult = await HiringModel.aggregate([
+    {
+      $lookup: {
+        from: "profiles",
+        localField: "serviceProvider",
+        foreignField: "user",
+        as: "serviceProviderProfile",
+      },
+    },
+    {
+      $unwind: "$serviceProviderProfile",
+    },
+  ]);
+
+  const hirings = await HiringModel.populate(queryResult, [
+    "serviceProvider",
+    "serviceConsumer",
+    "service",
+  ]);
+
   res.status(StatusCodes.OK).json({ hirings, count: hirings.length });
 };
 
