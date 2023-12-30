@@ -8,7 +8,6 @@ const getAllServiceMen = async (req, res) => {
   let { key, page, items_per_page } = req.query;
   page = parseInt(page);
   items_per_page = parseInt(items_per_page);
-  console.log(key, page, items_per_page);
   // define individual pipelines
 
   // fetch serviceProviders with active and verified user account
@@ -40,6 +39,15 @@ const getAllServiceMen = async (req, res) => {
     },
     {
       $unwind: "$user",
+    },
+    {
+      // filter service that are active and have phone number
+      $match: {
+        $and: [
+          { "user.active": true },
+          { "user.phoneNumber": { $exists: true } },
+        ],
+      },
     },
     {
       $lookup: {
@@ -75,6 +83,7 @@ const getAllServiceMen = async (req, res) => {
     },
   ]);
 
+  console.log(serviceMen.length);
   res.status(StatusCodes.OK).json({ serviceMen, nHits: serviceMen.length });
 };
 
