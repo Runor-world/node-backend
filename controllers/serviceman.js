@@ -31,13 +31,10 @@ const getAllServiceMen = async (req, res) => {
       },
     },
     {
-      $unwind: "$profile",
-    },
-    {
       $lookup: {
         from: "users",
-        localField: "_idr",
-        foreignField: "user",
+        localField: "user",
+        foreignField: "_id",
         as: "user",
       },
     },
