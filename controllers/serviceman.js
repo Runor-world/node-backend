@@ -30,6 +30,9 @@ const getAllServiceMen = async (req, res) => {
       },
     },
     {
+      $unwind: "$profile",
+    },
+    {
       $lookup: {
         from: "users",
         localField: "user",
@@ -83,7 +86,6 @@ const getAllServiceMen = async (req, res) => {
     },
   ]);
 
-  console.log(serviceMen.length);
   res.status(StatusCodes.OK).json({ serviceMen, nHits: serviceMen.length });
 };
 
